@@ -1,0 +1,170 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>MvcCoreWeb</name>
+    </assembly>
+    <members>
+        <member name="T:MvcCoreWeb.Controllers.UserController">
+            <summary>
+            人员
+            </summary>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.UserController.GetUsers">
+            <summary>
+            获取人员列表
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.UserController.GetUserById(System.Int32)">
+            <summary>
+            获取人员
+            </summary>
+            <param name="id">人员Id</param>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.UserController.AddUser(MvcCoreWeb.Models.DbModels.User)">
+            <summary>
+            创建人员
+            </summary>
+            <param name="user">人员信息</param>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.UserController.EditUser(MvcCoreWeb.Models.DbModels.User)">
+            <summary>
+            编辑人员
+            </summary>
+            <param name="user">人员信息</param>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.UserController.RemoveUser(System.Int32)">
+            <summary>
+            删除人员
+            </summary>
+            <param name="id"></param>
+            <returns></returns>
+        </member>
+        <member name="T:MvcCoreWeb.Models.ApiResult`1">
+            <summary>
+            返回类
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="P:MvcCoreWeb.Models.ApiResult`1.Data">
+            <summary>
+            数据主体
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.ApiResult.Code">
+            <summary>
+            状态值
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.ApiResult.Success">
+            <summary>
+            请求是否成功
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.ApiResult.Message">
+            <summary>
+            错误消息
+            </summary>
+        </member>
+        <member name="T:MvcCoreWeb.Models.DbModels.Account">
+            <summary>
+            账号实体
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.Account.Id">
+            <summary>
+            账号Id
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.Account.UserName">
+            <summary>
+            用户名
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.Account.Password">
+            <summary>
+            密码
+            </summary>
+        </member>
+        <member name="T:MvcCoreWeb.Models.DbModels.User">
+            <summary>
+            人员实体
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.User.Id">
+            <summary>
+            人员Id
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.User.Name">
+            <summary>
+            人员名称
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.User.Sex">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.User.IsDeleted">
+            <summary>
+            是否删除
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.User.CreateTime">
+            <summary>
+            创建时间
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.User.ModifyTime">
+            <summary>
+            修改时间
+            </summary>
+        </member>
+        <member name="T:MvcCoreWeb.Models.Enums.Sex">
+            <summary>
+            性别
+            </summary>
+        </member>
+        <member name="F:MvcCoreWeb.Models.Enums.Sex.未填">
+            <summary>
+            未填
+            </summary>
+        </member>
+        <member name="F:MvcCoreWeb.Models.Enums.Sex.男">
+            <summary>
+            男
+            </summary>
+        </member>
+        <member name="F:MvcCoreWeb.Models.Enums.Sex.女">
+            <summary>
+            女
+            </summary>
+        </member>
+        <member name="M:MvcCoreWeb.Tools.RedisCacheHelper.#ctor(System.String,System.String)">
+            <summary>
+            初始化 Redis
+            </summary>
+            <param name="connectionString"></param>
+            <param name="instanceName"></param>
+        </member>
+        <member name="M:MvcCoreWeb.Tools.RedisCacheHelper.Refresh(System.String)">
+            <summary>
+            刷新数据
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Tools.RedisCacheHelper.Replace(System.String,System.String,System.Nullable{System.Int32})">
+            <summary>
+            更新数据
+            </summary>
+            <param name="key"></param>
+            <param name="value"></param>
+            <param name="exprieTime"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
