@@ -4,6 +4,55 @@
         <name>MvcCoreWeb</name>
     </assembly>
     <members>
+        <member name="T:MvcCoreWeb.Controllers.DispatchController">
+            <summary>
+            调度队列任务
+            </summary>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.DispatchController.AddEnqueue">
+            <summary>
+            添加一个任务到队列，并立即执行
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.DispatchController.AddSchedule">
+            <summary>
+            添加一个延时任务到队列
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.DispatchController.AddRecurring">
+            <summary>
+            添加一个定时任务
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.DispatchController.DeleteBgJob(System.String)">
+            <summary>
+            删除后台任务
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.DispatchController.DeleteReJob(System.String)">
+            <summary>
+            删除定时任务
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.DispatchController.TriggerReJob(System.String)">
+            <summary>
+            触发定时任务
+            </summary>
+            <param name="jobId"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.DispatchController.FlagDone(System.String)">
+            <summary>
+            队列任务立即执行
+            </summary>
+            <param name="jobId"></param>
+            <returns></returns>
+        </member>
         <member name="T:MvcCoreWeb.Controllers.UserController">
             <summary>
             人员
