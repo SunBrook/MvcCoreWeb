@@ -1,0 +1,69 @@
+version: '3'
+
+services:
+  coreweb:
+    image: coreweb:1.0
+    restart: always
+    container_name: web01
+    ports:
+      - "5001:5001"
+    volumes:
+      - /f/Docker/web_publish:/usr/local/src/DockerWebTest
+    networks:
+      - sun_network
+    depends_on:
+      - myredis
+      - mysql
+      - mssql
+
+  myredis:
+    image: redis:6.0.8
+    restart: always
+    container_name: myredis01
+    ports:
+      - "6379:6379"
+    volumes:
+      - /f/Docker/redis/redis.conf:/etc/redis/redis.conf
+      - /f/Docker/redis/data:/data
+    networks:
+      - sun_network
+    command: redis-server /etc/redis/redis.conf
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    container_name: mysql01
+    environment:
+      MYSQL_ROOT_PASSWORD: "123456"
+      MYSQL_ALLOW_EMPTY_PASSWORD: "no"
+      MYSQL_DATABASE: "db2022"
+      MYSQL_USER: "sa"
+      MYSQL_PASSWORD: "123456"
+    ports:
+      - "3306:3306"
+    volumes:
+      - /f/Docker/mysql/log:/var/log/mysql
+      - /f/Docker/mysql/data:/var/lib/mysql
+      - /f/Docker/mysql/conf:/etc/mysql/conf.d
+    networks:
+      - sun_network
+    command: --default-authentication-plugin=mysql_native_password #解决外部无法访问
+
+  mssql:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    restart: always
+    container_name: sqlserver01
+    environment:
+      ACCEPT_EULA: "Y"
+      SA_PASSWORD: "sun123456"
+    ports:
+      - "1433:1433"
+    volumes:
+      - /f/Docker/sqlserver/data:/var/opt/mssql/data 
+      - /f/Docker/sqlserver/log:/var/opt/mssql/log 
+      - /f/Docker/sqlserver/secrets:/var/opt/mssql/secrets
+    networks:
+      - sun_network
+
+networks:
+  sun_network:
