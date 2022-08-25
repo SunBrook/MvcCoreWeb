@@ -4,6 +4,25 @@
         <name>MvcCoreWeb</name>
     </assembly>
     <members>
+        <member name="T:MvcCoreWeb.Controllers.AuthController">
+            <summary>
+            Jwt 权限验证
+            </summary>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.AuthController.Get(System.String,System.String)">
+            <summary>
+            获取Token
+            </summary>
+            <param name="userName">用户名</param>
+            <param name="password">密码</param>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.AuthController.Check">
+            <summary>
+            权限验证
+            </summary>
+            <returns></returns>
+        </member>
         <member name="T:MvcCoreWeb.Controllers.DispatchController">
             <summary>
             调度队列任务
@@ -191,6 +210,21 @@
         <member name="F:MvcCoreWeb.Models.Enums.Sex.女">
             <summary>
             女
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Tools.JwtConfig.Issuer">
+            <summary>
+            颁发者
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Tools.JwtConfig.Audience">
+            <summary>
+            哪些客户端可以使用
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Tools.JwtConfig.SecretKey">
+            <summary>
+            密钥（长度必须大于等于16）
             </summary>
         </member>
         <member name="M:MvcCoreWeb.Tools.RedisCacheHelper.#ctor(System.String,System.String)">
