@@ -29,7 +29,7 @@ namespace MvcCoreWeb.Controllers
 
             using (_context)
             {
-                var account = _context.Account.ToList();
+                var account = _context.Accounts.ToList();
                 return View(account);
             }
         }

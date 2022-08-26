@@ -2,8 +2,10 @@ using Hangfire;
 using Hangfire.MySql;
 using Hangfire.SqlServer;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,6 +19,9 @@ using MvcCoreWeb.Models.DbModels;
 using MvcCoreWeb.Services;
 using MvcCoreWeb.Tools;
 using System;
+using System.IdentityModel.Tokens.Jwt;
+using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -134,25 +139,45 @@ namespace MvcCoreWeb
             services.AddHangfireServer(); // 代替 启动 hangfire 服务
             services.AddTransient<IHangfireJob, MyBackgroundJob>();
 
+            // 为不同角色创建策略
+            services.AddAuthorization(option =>
+            {
+                option.AddPolicy("accountSystem", policy => policy.RequireRole("Account", "Employee"));
+                option.AddPolicy("Permission", policy => policy.Requirements.Add(new PolicyRequirement()));
+            });
 
             // 添加 jwt 认证
             JwtConfig.Instance = Configuration.GetSection(nameof(JwtConfig)).Get<JwtConfig>();
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
             })
                 .AddJwtBearer(options =>
                 {
                     options.TokenValidationParameters = new TokenValidationParameters
                     {
-                        ValidateIssuer = true,//是否验证Issuer
-                        ValidateAudience = true,//是否验证Audience
+                        
+                        
                         ValidateLifetime = true,//是否验证失效时间
                         ClockSkew = TimeSpan.FromSeconds(30),
-                        ValidateIssuerSigningKey = true,//是否验证SecurityKey
-                        ValidAudience = JwtConfig.Instance.Audience,//Audience
+
+                        ValidateAudience = true,//是否验证Audience
+                        //ValidAudience = JwtConfig.Instance.Audience,//Audience
+                        // 动态验证，重新登录时，刷新token，旧token强制失效
+                        AudienceValidator = (m, n, z) =>
+                        {
+                            var jwtToken = n as JwtSecurityToken;
+                            var userId = jwtToken.Claims.FirstOrDefault(c => c.Type == ClaimTypes.PrimarySid)?.Value ?? "";
+                            var userAudience = RedisCacheHelper.Get<string>($"user_audience_{userId}");
+                            return m != null && userAudience != null && m.Contains(userAudience);
+                        },
+
+                        ValidateIssuer = true,//是否验证Issuer
                         ValidIssuer = JwtConfig.Instance.Issuer,//Issuer，这两项和前面签发jwt的设置一致
+
+                        ValidateIssuerSigningKey = true,//是否验证SecurityKey
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(JwtConfig.Instance.SecretKey))//拿到SecurityKey
                     };
 
@@ -175,11 +200,11 @@ namespace MvcCoreWeb
                     };
                 });
 
-            // 为不同角色创建策略
-            services.AddAuthorization(option =>
-            {
-                option.AddPolicy("accountSystem", policy => policy.RequireRole("Account", "Employee"));
-            });
+            // 注入授权Handler
+            //services.AddSingleton<IAuthorizationHandler, PolicyHandler>();
+            services.AddScoped<IAuthorizationHandler, PolicyHandler>();
+
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddScoped<IUserService, UserService>();
             services.AddMvc(options => options.EnableEndpointRouting = false).SetCompatibilityVersion(Microsoft.AspNetCore.Mvc.CompatibilityVersion.Latest);
@@ -224,7 +249,16 @@ namespace MvcCoreWeb
             // 使用 wwwroot 静态文件
             app.UseStaticFiles();
             app.UseRouting();
+
+            // 添加jwt验证
+            app.UseAuthentication();
+            // 允许抛出 jwt 异常
+            IdentityModelEventSource.ShowPII = true;
+            // 使用 Auth
             app.UseAuthorization();
+
+            MyHttpContext.Configure(app.ApplicationServices.GetRequiredService<IHttpContextAccessor>());
+
 
             //app.UseEndpoints(endpoints =>
             //{
@@ -246,10 +280,7 @@ namespace MvcCoreWeb
             RecurringJob.AddOrUpdate<IHangfireJob>("每日人员新增", j => j.DaliyWork(), "0 0 0 * * ?", TimeZoneInfo.Local);
             //RecurringJob.AddOrUpdate<IHangfireJob>("每日人员新增", j => j.DaliyWork(), Cron.Daily(0, 0), TimeZoneInfo.Local);
 
-            // 添加jwt验证
-            app.UseAuthentication();
-            // 允许抛出 jwt 异常
-            IdentityModelEventSource.ShowPII = true;
+            
 
             app.UseMvc(route =>
             {

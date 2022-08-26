@@ -10,6 +10,7 @@ namespace MvcCoreWeb.Tools
     {
         private static RedisCache _redisCache = null;
         private static RedisCacheOptions options = null;
+        public static string InstanceName = null;
 
         /// <summary>
         /// 初始化 Redis
@@ -18,6 +19,7 @@ namespace MvcCoreWeb.Tools
         /// <param name="instanceName"></param>
         public RedisCacheHelper(string connectionString, string instanceName)
         {
+            InstanceName = instanceName;
             options = new RedisCacheOptions
             {
                 Configuration = connectionString,

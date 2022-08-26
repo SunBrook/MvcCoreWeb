@@ -9,9 +9,9 @@
             Jwt 权限验证
             </summary>
         </member>
-        <member name="M:MvcCoreWeb.Controllers.AuthController.Get(System.String,System.String)">
+        <member name="M:MvcCoreWeb.Controllers.AuthController.Login(System.String,System.String)">
             <summary>
-            获取Token
+            登录，获取Token
             </summary>
             <param name="userName">用户名</param>
             <param name="password">密码</param>
@@ -20,6 +20,12 @@
         <member name="M:MvcCoreWeb.Controllers.AuthController.Check">
             <summary>
             权限验证
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Controllers.AuthController.Logout">
+            <summary>
+            退出登录
             </summary>
             <returns></returns>
         </member>
@@ -157,6 +163,36 @@
             密码
             </summary>
         </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.Account.ModifyTime">
+            <summary>
+            修改时间
+            </summary>
+        </member>
+        <member name="T:MvcCoreWeb.Models.DbModels.Permission">
+            <summary>
+            权限表
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.Permission.Id">
+            <summary>
+            权限Id
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.Permission.Controller">
+            <summary>
+            控制器
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.Permission.Action">
+            <summary>
+            方法
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.Permission.Url">
+            <summary>
+            /控制器/方法
+            </summary>
+        </member>
         <member name="T:MvcCoreWeb.Models.DbModels.User">
             <summary>
             人员实体
@@ -192,6 +228,26 @@
             修改时间
             </summary>
         </member>
+        <member name="T:MvcCoreWeb.Models.DbModels.UserPermission">
+            <summary>
+            用户权限表
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.UserPermission.Id">
+            <summary>
+            Id
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.UserPermission.AccountId">
+            <summary>
+            账号Id
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Models.DbModels.UserPermission.PermissionId">
+            <summary>
+            权限Id
+            </summary>
+        </member>
         <member name="T:MvcCoreWeb.Models.Enums.Sex">
             <summary>
             性别
@@ -225,6 +281,21 @@
         <member name="P:MvcCoreWeb.Tools.JwtConfig.SecretKey">
             <summary>
             密钥（长度必须大于等于16）
+            </summary>
+        </member>
+        <member name="T:MvcCoreWeb.Tools.PolicyRequirement">
+            <summary>
+            权限承载实体
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Tools.PolicyRequirement.DeniedAction">
+            <summary>
+            无权限 Action
+            </summary>
+        </member>
+        <member name="P:MvcCoreWeb.Tools.PolicyRequirement.LoginAction">
+            <summary>
+            登录 Action
             </summary>
         </member>
         <member name="M:MvcCoreWeb.Tools.RedisCacheHelper.#ctor(System.String,System.String)">

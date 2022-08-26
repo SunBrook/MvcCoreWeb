@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using MvcCoreWeb.Models;
 using MvcCoreWeb.Models.DbModels;
 using MvcCoreWeb.Tools;
 using Newtonsoft.Json;
@@ -29,42 +30,48 @@ namespace MvcCoreWeb.Controllers
         }
 
         /// <summary>
-        /// 获取Token
+        /// 登录，获取Token
         /// </summary>
         /// <param name="userName">用户名</param>
         /// <param name="password">密码</param>
         /// <returns></returns>
         [AllowAnonymous]
-        [HttpGet]
-        public IActionResult Get(string userName, string password)
+        [HttpPost]
+        public IActionResult Login(string userName, string password)
         {
             if (!string.IsNullOrEmpty(userName) && !string.IsNullOrEmpty(password))
             {
                 using (_context)
                 {
-                    var userInfo = _context.Account.FirstOrDefault(c => c.UserName == userName && c.Password == password);
+                    var userInfo = _context.Accounts.FirstOrDefault(c => c.UserName == userName && c.Password == password);
                     if (userInfo == null)
                     {
                         return new NotFoundResult();
                     }
 
+                    var now = DateTime.Now;
+
                     var issUser = JwtConfig.Instance.Issuer; // 颁发者
-                    var audience = JwtConfig.Instance.Audience; // 允许哪些客户端使用
                     var secretKey = JwtConfig.Instance.SecretKey; // 密钥
+
+                    //var audience = JwtConfig.Instance.Audience; // 允许哪些客户端使用
+                    var userAudienceKey = $"user_audience_{userInfo.Id}";
+                    var audience = $"{new DateTimeOffset(now).ToUnixTimeSeconds()}"; // 每次登录更改
+                    RedisCacheHelper.Set(userAudienceKey, audience, 3600);
 
                     var claims = new Claim[]
                     {
                         new Claim(JwtRegisteredClaimNames.Iss,issUser),
-                        new Claim(JwtRegisteredClaimNames.Nbf, $"{new DateTimeOffset(DateTime.Now).ToUnixTimeSeconds()}"),
-                        new Claim(JwtRegisteredClaimNames.Exp, $"{new DateTimeOffset(DateTime.Now.AddHours(1)).ToUnixTimeSeconds()}"),
+                        new Claim(JwtRegisteredClaimNames.Nbf, $"{new DateTimeOffset(now).ToUnixTimeSeconds()}"),
+                        new Claim(JwtRegisteredClaimNames.Exp, $"{new DateTimeOffset(now.AddHours(1)).ToUnixTimeSeconds()}"),
                         new Claim(ClaimTypes.PrimarySid, userInfo.Id.ToString()),
                         new Claim(ClaimTypes.Role, "Account"),
                         new Claim(ClaimTypes.Role, "System"),
                         new Claim(ClaimTypes.Name, userName),
-                        new Claim(ClaimTypes.UserData, JsonConvert.SerializeObject(new {
-                            userInfo.Id,
-                            Name = userName,
-                            Role = new string[]{ "Account", "System" },
+                        new Claim(ClaimTypes.UserData, JsonConvert.SerializeObject(new LoginUser{
+                            Id = userInfo.Id,
+                            UserName = userName,
+                            Roles = new string[]{ "Account", "System" },
                             Project = "s01"
                         }))
                     };
@@ -78,7 +85,7 @@ namespace MvcCoreWeb.Controllers
                     issuer: issUser,
                     audience: audience,
                     claims: claims,
-                    expires: DateTime.Now.AddHours(1),
+                    expires: now.AddHours(1),
                     signingCredentials: creds);
 
                     return new JsonResult(new
@@ -99,11 +106,37 @@ namespace MvcCoreWeb.Controllers
         /// <returns></returns>
         [HttpGet]
         //[Authorize(Roles = "Account")]
-        //[Authorize(Roles = "System")]
-        [Authorize(Policy = "accountSystem")]
+        //[Authorize(Roles = "System")] // 单个权限
+        //[Authorize(Policy = "accountSystem")] // 组合权限判断
+        [Authorize("Permission")] // 自定义验证规则，根据用户权限判断
         public IActionResult Check()
         {
-            return new OkResult();
+            return new JsonResult( new { Current.ClientIp, Current.User });
+        }
+
+        /// <summary>
+        /// 退出登录
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost]
+        [Authorize(Policy = "accountSystem")]
+        public IActionResult Logout()
+        {
+            var result = RedisCacheHelper.Remove($"user_audience_{Current.User.Id}");
+            return new JsonResult(result ? "退出登录成功" : "退出登录失败");
+        }
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult NoPermission()
+        {
+            return new ForbidResult("No Permission.");
+        }
+
+        [AllowAnonymous]
+        [HttpGet]
+        public IActionResult LoginPage()
+        {
+            return new JsonResult("重新登录");
         }
     }
 }

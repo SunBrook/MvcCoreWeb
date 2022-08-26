@@ -40,10 +40,11 @@ namespace MvcCoreWeb.HangfireJobs
                 var account = new Account
                 {
                     UserName = Guid.NewGuid().ToString("N").Substring(0,8),
-                    Password = "123456"
+                    Password = "123456",
+                    ModifyTime = DateTime.Now
                 };
 
-                _sqlContext.Account.Add(account);
+                _sqlContext.Accounts.Add(account);
                 _sqlContext.SaveChanges();
             }
         }

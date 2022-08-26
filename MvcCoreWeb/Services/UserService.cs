@@ -25,11 +25,11 @@ namespace MvcCoreWeb.Services
                 int result = _myDbContext.SaveChanges();
                 if (result > 0)
                 {
-                    var userKey = $"_user_{user.Id}";
+                    var userKey = $"user_{user.Id}";
                     RedisCacheHelper.Set(userKey, user);
 
                     var allUsers = _myDbContext.Users.Where(c => !c.IsDeleted).ToList();
-                    var allUserKey = $"_userlist";
+                    var allUserKey = $"userlist";
                     RedisCacheHelper.Set(allUserKey, allUsers);
 
                     return ApiResult.Ok(user);
@@ -42,7 +42,7 @@ namespace MvcCoreWeb.Services
         {
             using (_myDbContext)
             {
-                var userKey = $"_user_{id}";
+                var userKey = $"user_{id}";
                 var redisUser = RedisCacheHelper.Get<User>(userKey);
                 if (redisUser == null)
                 {
@@ -70,7 +70,7 @@ namespace MvcCoreWeb.Services
         {
             using (_myDbContext)
             {
-                var usersKey = "_userlist";
+                var usersKey = "userlist";
                 var redisUserList = RedisCacheHelper.Get<List<User>>(usersKey);
                 if (redisUserList == null || redisUserList.Count > 0)
                 {
@@ -108,11 +108,11 @@ namespace MvcCoreWeb.Services
                 int result = _myDbContext.SaveChanges();
                 if (result > 0)
                 {
-                    var userKey = $"_user_{mysqlUser.Id}";
+                    var userKey = $"user_{mysqlUser.Id}";
                     RedisCacheHelper.Set(userKey, mysqlUser);
 
                     var allUsers = _myDbContext.Users.ToList();
-                    var allUserKey = $"_userlist";
+                    var allUserKey = $"userlist";
                     RedisCacheHelper.Set(allUserKey, allUsers);
                 }
                 return ApiResult.Ok(mysqlUser);
@@ -134,11 +134,11 @@ namespace MvcCoreWeb.Services
                     mysqlUser.ModifyTime = DateTime.Now;
                     _myDbContext.SaveChanges();
 
-                    var userKey = $"_user_{mysqlUser.Id}";
+                    var userKey = $"user_{mysqlUser.Id}";
                     RedisCacheHelper.Remove(userKey);
 
                     var allUsers = _myDbContext.Users.Where(c => !c.IsDeleted).ToList();
-                    var allUserKey = $"_userlist";
+                    var allUserKey = $"userlist";
                     if (allUsers.Count == 0)
                     {
                         RedisCacheHelper.Remove(allUserKey);
@@ -168,11 +168,11 @@ namespace MvcCoreWeb.Services
                     mysqlUser.ModifyTime = DateTime.Now;
                     _myDbContext.SaveChanges();
 
-                    var userKey = $"_user_{mysqlUser.Id}";
+                    var userKey = $"user_{mysqlUser.Id}";
                     RedisCacheHelper.Remove(userKey);
 
                     var allUsers = _myDbContext.Users.Where(c => !c.IsDeleted).ToList();
-                    var allUserKey = $"_userlist";
+                    var allUserKey = $"userlist";
                     if (allUsers.Count == 0)
                     {
                         RedisCacheHelper.Remove(allUserKey);

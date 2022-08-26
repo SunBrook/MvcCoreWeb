@@ -10,6 +10,8 @@ namespace MvcCoreWeb.Models.DbModels
 
         }
 
-        public DbSet<Account> Account { get; set; }
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<Permission> Permissions { get; set; }
+        public DbSet<UserPermission> UserPermissions { get; set; }
     }
 }

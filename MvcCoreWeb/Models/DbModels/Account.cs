@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MvcCoreWeb.Models.DbModels
 {
@@ -20,5 +21,9 @@ namespace MvcCoreWeb.Models.DbModels
         /// 密码
         /// </summary>
         public string Password { get; set; }
+        /// <summary>
+        /// 修改时间
+        /// </summary>
+        public DateTime ModifyTime { get; set; }
     }
 }
