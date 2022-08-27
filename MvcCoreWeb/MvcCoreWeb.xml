@@ -268,6 +268,16 @@
             女
             </summary>
         </member>
+        <member name="P:MvcCoreWeb.Tools.EnumEntity.EnumName">
+            <summary>  
+            枚举名称  
+            </summary>  
+        </member>
+        <member name="P:MvcCoreWeb.Tools.EnumEntity.EnumValue">
+            <summary>  
+            枚举对象的值  
+            </summary>  
+        </member>
         <member name="P:MvcCoreWeb.Tools.JwtConfig.Issuer">
             <summary>
             颁发者
@@ -318,6 +328,48 @@
             <param name="key"></param>
             <param name="value"></param>
             <param name="exprieTime"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Tools.SnowflakeIDcreator.SetWorkerID(System.Int64)">
+            <summary>
+            设置机器码
+            </summary>
+            <param name="id">机器码</param>
+        </member>
+        <member name="M:MvcCoreWeb.Tools.SnowflakeIDcreator.tillNextMillis(System.Int64)">
+            <summary>
+            获取下一微秒时间戳
+            </summary>
+            <param name="lastTimestamp"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Tools.SnowflakeIDcreator.timeGen">
+            <summary>
+            生成当前时间戳
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:MvcCoreWeb.Tools.SqlConnectionExtension">
+            <summary>
+            sqlbulkcopy 数据库批量插入
+            </summary>
+        </member>
+        <!-- Badly formed XML comment ignored for member "M:MvcCoreWeb.Tools.SqlConnectionExtension.BulkCopy``1(System.Data.SqlClient.SqlConnection,System.Collections.Generic.List{``0},System.Int32,System.String,System.Nullable{System.Int32},System.Data.SqlClient.SqlTransaction)" -->
+        <member name="M:MvcCoreWeb.Tools.XmlUtils.SerializeObject``1(``0,System.Text.Encoding)">
+            <summary>
+            Object TO XML
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="obj"></param>
+            <param name="enc"></param>
+            <returns></returns>
+        </member>
+        <member name="M:MvcCoreWeb.Tools.XmlUtils.DeSerializeObject``1(System.String)">
+            <summary>
+            XML to object
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="xmlData"></param>
             <returns></returns>
         </member>
     </members>
